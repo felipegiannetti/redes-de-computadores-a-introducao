@@ -1,0 +1,13 @@
+# Questão 4 — O Tradutor de Mundos: Função do Modem
+
+Abra o arquivo `simulador.html` no navegador. A animação já inicia automaticamente. Clique em **"Simular Ruído na Linha"** para ver o efeito da interferência nos dois tipos de sinal.
+
+---
+
+## Análise
+
+O modem, cujo nome vem de Modulador/Demodulador, existe porque computadores e meios de transmissão físicos "falam línguas diferentes". O computador trabalha internamente com sinais digitais: pulsos elétricos que representam apenas dois estados, 0 (ausência de tensão) e 1 (presença de tensão). Porém, o cabo coaxial da operadora, assim como a linha telefônica, foi projetado para transportar sinais analógicos (ondas contínuas com variações graduais de frequência e amplitude). O modem faz a tradução: na saída do computador ele modula o sinal digital, transformando os bits em uma onda senoidal que viaja pelo cabo, e na chegada ele demodula a onda analógica recebida, convertendo-a de volta em bits para o computador entender.
+
+Essa diferença existe porque computadores precisam de precisão absoluta, um bit é 0 ou 1, sem meio-termo. Para processamento interno isso é ótimo, mas sinais digitais são muito sensíveis a interferências, ou seja, qualquer ruído elétrico que ultrapasse o limiar de decisão inverte um bit, corrompendo os dados de forma definitiva. Já os meios físicos de transmissão foram historicamente projetados para sinais analógicos, que são mais fáceis de amplificar e filtrar ao longo de cabos longos, e degradam de forma gradual, um pouco de ruído distorce a onda, mas a forma ainda é reconhecível e recuperável. A simulação mostra isso claramente, ao acionar o ruído, o sinal digital apresenta erros de bit imediatos (bits piscando em vermelho, ondas quadradas deformadas), enquanto o sinal analógico fica distorcido mas a onda senoidal original ainda aparece ao fundo de forma identificável.
+
+Portanto, a função do modem é ser esse ponto de fronteira entre dois mundos: converte o rigor binário do computador num formato compatível com a infraestrutura física da operadora, e faz o caminho inverso na recepção. Sem ele, o computador tentaria injetar pulsos quadrados abruptos num cabo projetado para ondas suaves, resultando em sinal distorcido e ilegível do outro lado. É por isso que, mesmo em redes modernas de fibra óptica, alguma forma de conversão de sinal ainda é necessária. O princípio do "tradutor de mundos" permanece o mesmo.
