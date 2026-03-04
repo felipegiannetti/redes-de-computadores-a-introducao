@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Simulador — Banda Passante | Rotina A vs Rotina B</title>
+  <title>Simulador — Banda Passante | PIT Telecom / Oi</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -27,82 +27,14 @@
       text-align: center;
       color: #8b949e;
       font-size: 0.8em;
-      margin-bottom: 24px;
-    }
-
-    /* ── Link capacity bar ─────────────────────── */
-    .link-container {
-      max-width: 780px;
-      margin: 0 auto 24px;
-      background: #161b22;
-      border: 1px solid #30363d;
-      border-radius: 8px;
-      padding: 16px 20px;
-    }
-
-    .link-container h3 {
-      font-size: 0.85em;
-      color: #58a6ff;
-      margin-bottom: 10px;
-    }
-
-    .bw-outer {
-      background: #21262d;
-      border-radius: 4px;
-      height: 26px;
-      overflow: hidden;
-      border: 1px solid #30363d;
-      position: relative;
-      display: flex;
-    }
-
-    .bw-a {
-      background: #388bfd;
-      height: 100%;
-      transition: width 0.15s;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.69em; color: #000; font-weight: bold;
-      overflow: hidden; white-space: nowrap;
-    }
-
-    .bw-b {
-      background: #e3b341;
-      height: 100%;
-      transition: width 0.15s;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.69em; color: #000; font-weight: bold;
-      overflow: hidden; white-space: nowrap;
-    }
-
-    .bw-free {
-      background: #21262d;
-      height: 100%;
-      flex: 1;
-    }
-
-    .link-legend {
-      display: flex; gap: 16px; margin-top: 7px; font-size: 0.72em; color: #8b949e;
-    }
-    .dot { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 4px; vertical-align: middle; }
-    .dot-a  { background: #388bfd; }
-    .dot-b  { background: #e3b341; }
-    .dot-fr { background: #30363d; }
-
-    .sat-badge {
-      display: none;
-      background: #3d1f00;
-      border: 1px solid #f85149;
-      border-radius: 4px;
-      padding: 4px 10px;
-      font-size: 0.72em;
-      color: #f85149;
-      margin-top: 8px;
+      margin-bottom: 26px;
+      line-height: 1.5;
     }
 
     /* ── Buttons ──────────────────────────────── */
     .btn-row {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 28px;
       display: flex;
       gap: 12px;
       justify-content: center;
@@ -111,7 +43,7 @@
 
     button {
       border: none;
-      padding: 10px 28px;
+      padding: 11px 30px;
       border-radius: 6px;
       font-size: 0.9em;
       cursor: pointer;
@@ -119,82 +51,122 @@
       letter-spacing: 0.5px;
       transition: filter 0.15s;
     }
-    button:hover:not(:disabled) { filter: brightness(1.15); }
+    button:hover:not(:disabled) { filter: brightness(1.2); }
     button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-    #btnA    { background: #1f4e79; color: #58a6ff; border: 1px solid #388bfd; }
-    #btnB    { background: #3d2e00; color: #e3b341; border: 1px solid #e3b341; }
-    #btnAB   { background: #238636; color: #fff; }
-    #btnReset{ background: #21262d; color: #8b949e; border: 1px solid #30363d; }
+    #btnStart { background: #238636; color: #fff; }
+    #btnReset { background: #21262d; color: #8b949e; border: 1px solid #30363d; }
 
     /* ── Cards ───────────────────────────────── */
     .dashboard {
-      display: flex; gap: 20px; justify-content: center; flex-wrap: wrap;
-      align-items: flex-start; max-width: 820px; margin: 0 auto;
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      flex-wrap: wrap;
+      align-items: flex-start;
+      max-width: 820px;
+      margin: 0 auto;
     }
 
     .card {
       background: #161b22;
       border: 1px solid #30363d;
       border-radius: 8px;
-      padding: 18px;
-      width: 370px;
+      padding: 20px;
+      width: 375px;
       flex-shrink: 0;
     }
 
-    .card h2 { font-size: 0.95em; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px solid #30363d; }
-    .card-a h2 { color: #388bfd; }
-    .card-b h2 { color: #e3b341; }
+    .card h2 {
+      font-size: 0.95em;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #30363d;
+    }
 
-    .metric-label { font-size: 0.76em; color: #8b949e; margin: 12px 0 4px; }
+    .card-a h2 { color: #3fb950; }
+    .card-b h2 { color: #f78166; }
+
+    /* ── Metric ───────────────────────────────── */
+    .metric-label { font-size: 0.76em; color: #8b949e; margin: 14px 0 4px; }
 
     .progress-track {
-      background: #21262d; border-radius: 4px; height: 20px;
-      overflow: hidden; border: 1px solid #30363d;
+      background: #21262d;
+      border-radius: 4px;
+      height: 22px;
+      overflow: hidden;
+      border: 1px solid #30363d;
     }
 
     .progress-bar {
-      height: 100%; width: 0%; border-radius: 4px;
-      display: flex; align-items: center; justify-content: flex-end;
-      padding-right: 5px; font-size: 0.68em; color: #000; font-weight: bold;
-      transition: background-color 0.3s;
+      height: 100%;
+      width: 0%;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      padding-right: 6px;
+      font-size: 0.7em;
+      color: #000;
+      font-weight: bold;
+      transition: none;
     }
 
-    .bar-blue   { background: #388bfd; }
-    .bar-yellow { background: #e3b341; }
     .bar-green  { background: #3fb950; }
     .bar-red    { background: #f85149; }
-    .bar-purple { background: #bc8cff; }
+    .bar-orange { background: #e3b341; }
+    .bar-blue   { background: #388bfd; }
 
-    .status-text { font-size: 0.72em; margin-top: 4px; color: #8b949e; min-height: 13px; }
-    .timer { font-size: 1em; color: #e3b341; margin-top: 12px; }
-    .final-status { margin-top: 6px; font-size: 0.82em; font-weight: bold; min-height: 18px; }
+    .status-text {
+      font-size: 0.73em;
+      margin-top: 5px;
+      color: #8b949e;
+      min-height: 14px;
+    }
 
-    .quality-box {
+    /* ── Stats box ────────────────────────────── */
+    .stats-box {
       background: #010409;
       border: 1px solid #30363d;
       border-radius: 4px;
-      padding: 8px 10px;
-      margin-top: 10px;
-      font-size: 0.71em;
+      padding: 9px 11px;
+      margin-top: 14px;
+      font-size: 0.72em;
     }
-    .quality-box .ql { display: flex; justify-content: space-between; margin-bottom: 4px; }
-    .quality-box .ql:last-child { margin-bottom: 0; }
-    .quality-box .ql .lbl { color: #8b949e; }
-    .quality-box .ql .val { font-weight: bold; }
+
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+    .stat-row:last-child { margin-bottom: 0; }
+    .stat-row .lbl { color: #8b949e; }
+    .stat-row .val { font-weight: bold; }
+
     .green  { color: #3fb950; }
     .yellow { color: #d29922; }
     .red    { color: #f85149; }
     .blue   { color: #58a6ff; }
 
+    /* ── Timer / final ───────────────────────── */
+    .timer { font-size: 1.05em; color: #e3b341; margin-top: 14px; }
+    .final-status { margin-top: 6px; font-size: 0.85em; font-weight: bold; min-height: 20px; }
+
+    /* ── Log ─────────────────────────────────── */
     .log-panel {
-      background: #010409; border: 1px solid #30363d; border-radius: 4px;
-      padding: 6px 8px; margin-top: 10px; height: 110px; overflow-y: auto;
-      font-size: 0.68em; color: #8b949e;
+      background: #010409;
+      border: 1px solid #30363d;
+      border-radius: 4px;
+      padding: 7px 9px;
+      margin-top: 12px;
+      height: 120px;
+      overflow-y: auto;
+      font-size: 0.69em;
+      color: #8b949e;
     }
     .log-panel::-webkit-scrollbar { width: 3px; }
     .log-panel::-webkit-scrollbar-thumb { background: #30363d; }
-    .le { margin-bottom: 2px; }
+    .le { margin-bottom: 3px; }
     .le.info  { color: #58a6ff; }
     .le.ok    { color: #3fb950; }
     .le.warn  { color: #d29922; }
@@ -202,106 +174,143 @@
 
     /* ── Summary ──────────────────────────────── */
     #summary {
-      max-width: 780px; margin: 24px auto 0;
-      background: #161b22; border: 1px solid #30363d;
-      border-radius: 8px; padding: 16px 20px;
-      font-size: 0.8em; display: none;
+      max-width: 780px;
+      margin: 26px auto 0;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 16px 20px;
+      font-size: 0.8em;
+      display: none;
     }
-    #summary h3 { color: #58a6ff; margin-bottom: 10px; }
+
+    #summary h3 { color: #58a6ff; margin-bottom: 12px; }
+
     .sum-row {
-      display: flex; justify-content: space-between;
-      margin-bottom: 6px; border-bottom: 1px solid #21262d;
-      padding-bottom: 6px;
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 7px;
+      border-bottom: 1px solid #21262d;
+      padding-bottom: 7px;
     }
     .sum-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
     .sum-row .lbl { color: #8b949e; }
+    .sum-row .val { font-weight: bold; }
+
+    /* ── Insight box ──────────────────────────── */
+    .insight {
+      background: #0d2a1a;
+      border: 1px solid #3fb950;
+      border-radius: 6px;
+      padding: 12px 14px;
+      margin-top: 14px;
+      font-size: 0.78em;
+      color: #c9d1d9;
+      line-height: 1.6;
+      display: none;
+    }
+
+    .insight strong { color: #3fb950; }
   </style>
 </head>
 <body>
 
-  <h1>&#x1F4E1; Simulador — Banda Passante</h1>
-  <p class="subtitle">Link de 100 Mbps · Rotina A (Download em Massa) vs. Rotina B (Chamada de Vídeo)</p>
+  <h1>&#x1F4E1; Simulador — Banda Passante vs. Latência</h1>
+  <p class="subtitle">
+    PIT Telecom / Oi — Backbone de Fibra Óptica, Belo Horizonte<br>
+    Ambas as rotinas transmitem <strong>10 MB</strong> pelo mesmo link de alta velocidade.
+  </p>
 
-  <!-- ── Bandwidth bar ── -->
-  <div class="link-container">
-    <h3>Utilização do Link (100 Mbps total)</h3>
-    <div class="bw-outer" id="bw-bar">
-      <div class="bw-a"  id="bw-a-fill"></div>
-      <div class="bw-b"  id="bw-b-fill"></div>
-      <div class="bw-free" id="bw-free"></div>
-    </div>
-    <div class="link-legend">
-      <span><span class="dot dot-a"></span>Rotina A (download)</span>
-      <span><span class="dot dot-b"></span>Rotina B (vídeo)</span>
-      <span><span class="dot dot-fr"></span>Livre</span>
-    </div>
-    <div class="sat-badge" id="sat-badge">&#x26A0; LINK SATURADO — pacotes descartados / atraso elevado</div>
-  </div>
-
-  <!-- ── Buttons ── -->
   <div class="btn-row">
-    <button id="btnA"    onclick="runScenario('A')">&#x25B6; Apenas Rotina A</button>
-    <button id="btnB"    onclick="runScenario('B')">&#x25B6; Apenas Rotina B</button>
-    <button id="btnAB"   onclick="runScenario('AB')">&#x26A1; A + B Simultâneas</button>
+    <button id="btnStart" onclick="iniciar()">&#x25B6; Iniciar Simulação</button>
     <button id="btnReset" onclick="doReset()">&#x21BA; Resetar</button>
   </div>
 
-  <!-- ── Cards ── -->
   <div class="dashboard">
 
-    <!-- Rotina A -->
+    <!-- ── Rotina A ── -->
     <div class="card card-a">
-      <h2>&#x1F4E6; Rotina A — Download em Massa (arquivo 800 MB)</h2>
+      <h2>&#x1F4E6; Rotina A — 1 Pacote Gigante (Stream)</h2>
+      <p style="font-size:0.73em;color:#8b949e;margin-bottom:4px;">
+        10 MB enviados como um único bloco contínuo de dados.
+      </p>
 
-      <div class="metric-label">Progresso do Download</div>
+      <div class="metric-label">Progresso da Transmissão</div>
       <div class="progress-track">
-        <div class="progress-bar bar-blue" id="a-dl"></div>
+        <div class="progress-bar bar-green" id="a-prog"></div>
       </div>
-      <div class="status-text" id="a-dl-st">Aguardando...</div>
+      <div class="status-text" id="a-prog-st">Aguardando...</div>
 
-      <div class="metric-label">Uso de Banda</div>
+      <div class="metric-label">Dados Transferidos</div>
       <div class="progress-track">
-        <div class="progress-bar bar-blue" id="a-bw"></div>
+        <div class="progress-bar bar-blue" id="a-data"></div>
       </div>
-      <div class="status-text" id="a-bw-st">—</div>
+      <div class="status-text" id="a-data-st">0 KB / 10.240 KB</div>
 
       <div class="timer" id="a-timer">&#x23F1; 0.0s</div>
       <div class="final-status" id="a-final"></div>
 
-      <div class="quality-box" id="a-quality">
-        <div class="ql"><span class="lbl">Throughput atual</span><span class="val" id="a-throughput">—</span></div>
-        <div class="ql"><span class="lbl">Tipo de tráfego</span><span class="val blue">Bulk / tolerante a atraso</span></div>
-        <div class="ql"><span class="lbl">Impacto da latência</span><span class="val green">Baixo</span></div>
-        <div class="ql"><span class="lbl">Status</span><span class="val" id="a-status-q">—</span></div>
+      <div class="stats-box">
+        <div class="stat-row">
+          <span class="lbl">Nº de pacotes</span>
+          <span class="val blue">1</span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Overhead de latência</span>
+          <span class="val green" id="a-lat-total">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Throughput efetivo</span>
+          <span class="val" id="a-throughput">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Eficiência do link</span>
+          <span class="val green" id="a-eff">—</span>
+        </div>
       </div>
 
       <div class="log-panel" id="a-log"></div>
     </div>
 
-    <!-- Rotina B -->
+    <!-- ── Rotina B ── -->
     <div class="card card-b">
-      <h2>&#x1F4F9; Rotina B — Chamada de Vídeo (tempo real)</h2>
+      <h2>&#x1F4E9; Rotina B — 10.000 Pacotes Minúsculos</h2>
+      <p style="font-size:0.73em;color:#8b949e;margin-bottom:4px;">
+        10 MB divididos em 10.000 pacotes de 1 KB, com latência por pacote.
+      </p>
 
-      <div class="metric-label">Qualidade do Sinal de Vídeo</div>
+      <div class="metric-label">Progresso da Transmissão</div>
       <div class="progress-track">
-        <div class="progress-bar bar-green" id="b-qual"></div>
+        <div class="progress-bar bar-red" id="b-prog"></div>
       </div>
-      <div class="status-text" id="b-qual-st">Aguardando...</div>
+      <div class="status-text" id="b-prog-st">Aguardando...</div>
 
-      <div class="metric-label">Uso de Banda</div>
+      <div class="metric-label">Dados Transferidos</div>
       <div class="progress-track">
-        <div class="progress-bar bar-yellow" id="b-bw"></div>
+        <div class="progress-bar bar-orange" id="b-data"></div>
       </div>
-      <div class="status-text" id="b-bw-st">—</div>
+      <div class="status-text" id="b-data-st">0 KB / 10.240 KB</div>
 
       <div class="timer" id="b-timer">&#x23F1; 0.0s</div>
       <div class="final-status" id="b-final"></div>
 
-      <div class="quality-box" id="b-quality">
-        <div class="ql"><span class="lbl">Latência</span><span class="val" id="b-lat">—</span></div>
-        <div class="ql"><span class="lbl">Jitter</span><span class="val" id="b-jitter">—</span></div>
-        <div class="ql"><span class="lbl">Pacotes perdidos</span><span class="val" id="b-loss">—</span></div>
-        <div class="ql"><span class="lbl">Tipo de tráfego</span><span class="val yellow">Tempo real / sensível a atraso</span></div>
+      <div class="stats-box">
+        <div class="stat-row">
+          <span class="lbl">Nº de pacotes</span>
+          <span class="val red">10.000</span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Overhead de latência</span>
+          <span class="val" id="b-lat-total">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Throughput efetivo</span>
+          <span class="val" id="b-throughput">—</span>
+        </div>
+        <div class="stat-row">
+          <span class="lbl">Eficiência do link</span>
+          <span class="val" id="b-eff">—</span>
+        </div>
       </div>
 
       <div class="log-panel" id="b-log"></div>
@@ -309,273 +318,225 @@
 
   </div>
 
+  <!-- ── Insight ── -->
+  <div class="insight" id="insight">
+    <strong>&#x26A0; Por que a Rotina B é mais lenta com o mesmo link?</strong><br>
+    Ambas possuem a mesma banda passante disponível. A diferença é que a Rotina B
+    precisa esperar a confirmação (ACK) de cada um dos 10.000 pacotes antes de enviar
+    o próximo. Cada confirmação custa um tempo de latência (ida + volta do sinal na rede).
+    Multiplique isso por 10.000 pacotes e o tempo de latência acumulado domina o tempo total,
+    tornando o link de alta velocidade subutilizado.
+    <br><br>
+    <strong>&#x2192; Alta banda passante não resolve overhead de latência por pacote.</strong>
+  </div>
+
   <!-- ── Summary ── -->
   <div id="summary">
-    <h3>&#x1F4CA; Conclusão da Simulação</h3>
+    <h3>&#x1F4CA; Resultado da Simulação</h3>
     <div class="sum-row">
-      <span class="lbl">Rotina A sozinha — download concluído?</span>
-      <span class="val green" id="s-a-solo">—</span>
+      <span class="lbl">Rotina A — tempo total</span>
+      <span class="val green" id="s-a-time">—</span>
     </div>
     <div class="sum-row">
-      <span class="lbl">Rotina B sozinha — qualidade da chamada?</span>
-      <span class="val green" id="s-b-solo">—</span>
+      <span class="lbl">Rotina B — tempo total</span>
+      <span class="val red" id="s-b-time">—</span>
     </div>
     <div class="sum-row">
-      <span class="lbl">A + B simultâneas — qualidade da Rotina B?</span>
-      <span class="val red" id="s-ab">—</span>
+      <span class="lbl">Diferença de tempo</span>
+      <span class="val yellow" id="s-diff">—</span>
     </div>
     <div class="sum-row">
-      <span class="lbl">Causa do problema</span>
-      <span class="val yellow">Rotina A consumiu toda a banda passante disponível</span>
+      <span class="lbl">Causa do atraso na Rotina B</span>
+      <span class="val red">Latência acumulada × 10.000 pacotes</span>
     </div>
     <div class="sum-row">
-      <span class="lbl">Link saturado?</span>
-      <span class="val" id="s-sat">—</span>
+      <span class="lbl">Conclusão</span>
+      <span class="val yellow">Banda passante alta não elimina atraso por latência</span>
     </div>
   </div>
 
   <script>
     'use strict';
 
-    let running   = false;
-    let bwA_pct   = 0;  // percent of 100 Mbps used by A
-    let bwB_pct   = 0;  // percent of 100 Mbps used by B
+    const TOTAL_KB    = 10240;   // 10 MB
+    const PKT_COUNT   = 10000;   // Rotina B packet count
+    const PKT_LAT_MS  = 2;       // simulated per-packet latency (ms) — represents real ~5ms RTT compressed
 
-    /* ── Helpers ─────────────────────────────── */
+    // Sim time scale: Rotina A finishes in ~2.5s; Rotina B in ~22s (dominated by 10000 * 2ms)
+    const A_DURATION_MS = 2500;
+    const A_STEPS       = 50;    // update UI 50 times
+
+    let running = false;
+    let aStart  = 0;
+    let bStart  = 0;
+
+    /* ── Helpers ──────────────────────────────── */
     const sleep = ms => new Promise(r => setTimeout(r, ms));
-    const $ = id => document.getElementById(id);
-    const ts = () => new Date().toLocaleTimeString('pt-BR', {hour12:false});
+    const $     = id => document.getElementById(id);
 
-    function setText(id, t) { $(id).textContent = t; }
-    function setClass(id, c) { $(id).className = 'val ' + c; }
+    function setText(id, t)   { $(id).textContent = t; }
 
     function setBar(id, pct, cls) {
       const el = $(id);
-      el.style.width = Math.min(pct, 100) + '%';
-      el.textContent = pct >= 14 ? pct + '%' : '';
-      el.className   = 'progress-bar ' + cls;
+      el.style.width  = Math.min(pct, 100) + '%';
+      el.textContent  = pct >= 12 ? Math.round(pct) + '%' : '';
+      el.className    = 'progress-bar ' + cls;
     }
 
     function addLog(p, msg, type) {
       const box = $(p + '-log');
       const d   = document.createElement('div');
       d.className = 'le ' + (type || '');
-      d.textContent = '[' + ts() + '] ' + msg;
+      const ts  = new Date().toLocaleTimeString('pt-BR', { hour12: false });
+      d.textContent = '[' + ts + '] ' + msg;
       box.appendChild(d);
       box.scrollTop = box.scrollHeight;
     }
 
-    function updateBWBar() {
-      const total = Math.min(bwA_pct + bwB_pct, 100);
-      const aShare = Math.min(bwA_pct, 100);
-      const bShare = Math.min(bwB_pct, 100 - aShare);
-      $('bw-a-fill').style.width = aShare + '%';
-      $('bw-a-fill').textContent = aShare >= 8 ? ('A ' + Math.round(bwA_pct) + ' Mbps') : '';
-      $('bw-b-fill').style.width = bShare + '%';
-      $('bw-b-fill').textContent = bShare >= 8 ? ('B ' + Math.round(bwB_pct) + ' Mbps') : '';
-      $('sat-badge').style.display = total >= 98 ? 'block' : 'none';
+    function elapsed(start) {
+      return ((Date.now() - start) / 1000).toFixed(1);
     }
 
     function resetAll() {
-      bwA_pct = 0; bwB_pct = 0;
-      updateBWBar();
       ['a','b'].forEach(p => {
-        $(`${p}-log`).innerHTML = '';
-        setText(`${p}-timer`, '⏱ 0.0s');
-        setText(`${p}-final`, '');
+        setBar(p + '-prog', 0, p === 'a' ? 'bar-green' : 'bar-red');
+        setBar(p + '-data', 0, p === 'a' ? 'bar-blue'  : 'bar-orange');
+        setText(p + '-prog-st',    'Aguardando...');
+        setText(p + '-data-st',    '0 KB / 10.240 KB');
+        setText(p + '-timer',      '⏱ 0.0s');
+        setText(p + '-final',      '');
+        setText(p + '-lat-total',  '—');
+        setText(p + '-throughput', '—');
+        setText(p + '-eff',        '—');
+        $(p + '-log').innerHTML = '';
       });
-      setBar('a-dl',   0, 'bar-blue');
-      setBar('a-bw',   0, 'bar-blue');
-      setBar('b-qual', 0, 'bar-green');
-      setBar('b-bw',   0, 'bar-yellow');
-      setText('a-dl-st',    'Aguardando...');
-      setText('a-bw-st',    '—');
-      setText('a-throughput','—');
-      setText('a-status-q', '—');
-      setText('b-qual-st',  'Aguardando...');
-      setText('b-bw-st',    '—');
-      setText('b-lat',      '—');
-      setText('b-jitter',   '—');
-      setText('b-loss',     '—');
-      $('sat-badge').style.display = 'none';
-      $('summary').style.display   = 'none';
-      ['btnA','btnB','btnAB','btnReset'].forEach(id => $(id).disabled = false);
+      $('summary').style.display = 'none';
+      $('insight').style.display = 'none';
+      $('btnStart').disabled     = false;
+      $('btnReset').disabled     = false;
     }
 
-    function doReset() { resetAll(); }
+    function doReset() { if (!running) resetAll(); }
 
+    /* ── Rotina A — 1 giant packet ─────────────── */
+    async function rotinaA() {
+      aStart = Date.now();
+      const stepMs = A_DURATION_MS / A_STEPS;
 
-    /* ── Rotina A — bulk download ─────────────── */
-    async function rotinaA(contested) {
-      const start  = Date.now();
-      const TOTAL  = 800; // MB
-      // If contested, A only gets 85 Mbps; solo it gets 85 Mbps too (but no competition)
-      const mbps   = contested ? 85 : 85;
-      // seconds to transfer 800 MB at mbps Mbps = 800*8 / mbps
-      const totalSec = (TOTAL * 8) / mbps;  // ~75s → scale to sim: 8s
-      const steps    = 80;
-      const stepMs   = (8000) / steps;
+      addLog('a', 'Transmissão iniciada — 1 pacote de 10 MB.', 'info');
+      addLog('a', 'Aguardando 1 confirmação (ACK)...', 'info');
+      setText('a-prog-st', 'Enviando stream contínuo...');
+      setText('a-lat-total', '~5 ms (1 RTT)');
 
-      bwA_pct = mbps;
-      updateBWBar();
-
-      addLog('a', 'Download iniciado — 800 MB, ~' + mbps + ' Mbps.', 'info');
-      setText('a-dl-st', 'Baixando... ' + mbps + ' Mbps');
-      setText('a-bw-st', mbps + ' Mbps utilizados');
-      setBar('a-bw', mbps, 'bar-blue');
-
-      for (let i = 1; i <= steps; i++) {
+      for (let i = 1; i <= A_STEPS; i++) {
         await sleep(stepMs);
-        const dlPct = Math.round((i / steps) * 100);
-        const now   = ((Date.now() - start) / 1000).toFixed(1);
-        setBar('a-dl', dlPct, 'bar-blue');
-        setText('a-timer',     '⏱ ' + now + 's');
-        setText('a-throughput', mbps + ' Mbps (' + Math.round(dlPct * TOTAL / 100) + '/' + TOTAL + ' MB)');
-        if (i === 20) addLog('a', '25% — ' + Math.round(TOTAL * 0.25) + ' MB recebidos.', 'ok');
-        if (i === 40) addLog('a', '50% — ' + Math.round(TOTAL * 0.5)  + ' MB recebidos.', 'ok');
-        if (i === 60) addLog('a', '75% — ' + Math.round(TOTAL * 0.75) + ' MB recebidos.', 'ok');
+        const pct      = Math.round((i / A_STEPS) * 100);
+        const kbDone   = Math.round((pct / 100) * TOTAL_KB);
+        const sec      = elapsed(aStart);
+        setBar('a-prog', pct, 'bar-green');
+        setBar('a-data', pct, 'bar-blue');
+        setText('a-data-st',    kbDone.toLocaleString('pt-BR') + ' KB / 10.240 KB');
+        setText('a-timer',      '⏱ ' + sec + 's');
+        const mbps = ((kbDone / 1024) / (parseFloat(sec) || 0.01) * 8).toFixed(1);
+        setText('a-throughput', mbps + ' Mbps');
+        if (i === 25) addLog('a', '50% — 5.120 KB enviados.', 'ok');
       }
 
-      bwA_pct = 0;
-      updateBWBar();
-      const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-      setText('a-dl-st',    '✔ Download concluído');
-      setText('a-status-q', '✔ OK');
-      $('a-final').innerHTML = '<span class="green">✔ CONCLUÍDO em ' + elapsed + 's</span>';
-      addLog('a', 'Download finalizado em ' + elapsed + 's.', 'ok');
-      return elapsed;
+      const totalSec   = parseFloat(elapsed(aStart));
+      const throughput = ((TOTAL_KB / 1024) / totalSec * 8).toFixed(1);
+      setText('a-prog-st',    '✔ Stream completo — ACK recebido');
+      setText('a-throughput', throughput + ' Mbps');
+      setText('a-eff',        '~99% (quase toda banda utilizada para dados)');
+      $('a-eff').className    = 'val green';
+      $('a-final').innerHTML  =
+        '<span class="green">✔ CONCLUÍDO em ' + totalSec.toFixed(1) + 's</span>';
+      addLog('a', 'Concluído em ' + totalSec.toFixed(1) + 's — throughput: ' + throughput + ' Mbps.', 'ok');
+      return totalSec;
     }
 
+    /* ── Rotina B — 10.000 tiny packets ──────────── */
+    async function rotinaB() {
+      bStart = Date.now();
 
-    /* ── Rotina B — realtime video call ────────── */
-    async function rotinaB(contested) {
-      const start = Date.now();
-      const NEED  = 15;  // Mbps needed
+      addLog('b', 'Transmissão iniciada — 10.000 pacotes de 1 KB.', 'info');
+      addLog('b', 'Cada pacote aguarda confirmação (ACK) individualmente.', 'warn');
+      setText('b-prog-st', 'Enviando pacotes... (latência por pacote)');
 
-      addLog('b', 'Chamada de vídeo iniciada.', 'info');
-      addLog('b', 'Requisito: ' + NEED + ' Mbps, latência < 80 ms, jitter < 20 ms.', 'info');
+      const logMilestones = new Set([1000, 2500, 5000, 7500, 9500]);
 
-      bwB_pct = NEED;
-      updateBWBar();
-      setBar('b-bw', NEED, 'bar-yellow');
-      setText('b-bw-st', NEED + ' Mbps alocados');
+      for (let i = 1; i <= PKT_COUNT; i++) {
+        // Each packet: transmit (nearly instant at high bandwidth) + per-packet latency
+        await sleep(PKT_LAT_MS);
 
-      const steps   = 80;
-      const stepMs  = 100;
-      let totalLoss = 0;
+        const pct    = Math.round((i / PKT_COUNT) * 100);
+        const kbDone = Math.round((i / PKT_COUNT) * TOTAL_KB);
+        const sec    = elapsed(bStart);
 
-      for (let i = 1; i <= steps; i++) {
-        await sleep(stepMs);
-        const now = ((Date.now() - start) / 1000).toFixed(1);
-        setText('b-timer', '⏱ ' + now + 's');
+        // Update UI every 100 packets (avoid DOM flood)
+        if (i % 100 === 0 || i === PKT_COUNT) {
+          setBar('b-prog', pct, 'bar-red');
+          setBar('b-data', pct, 'bar-orange');
+          setText('b-data-st', kbDone.toLocaleString('pt-BR') + ' KB / 10.240 KB');
+          setText('b-timer',   '⏱ ' + sec + 's');
+          const totalSec = parseFloat(sec) || 0.01;
+          const mbps     = ((kbDone / 1024) / totalSec * 8).toFixed(2);
+          setText('b-throughput', mbps + ' Mbps');
 
-        // contested = A is running and consuming ~85 Mbps, leaving only 15 Mbps
-        // The video tries to use 15 Mbps, but gets squeezed sporadically
-        let latency, jitter, loss, qual, qualCls, qualTxt;
-
-        if (contested && i > 5) {
-          // link under heavy load — variable available bandwidth
-          const avail = Math.max(0, 100 - 85 - Math.random() * 10);
-          const actualMbps = Math.min(NEED, avail);
-          bwB_pct = actualMbps;
-          updateBWBar();
-
-          latency   = Math.round(140 + Math.random() * 200);
-          jitter    = Math.round(40  + Math.random() * 80);
-          loss      = +(Math.random() * 4).toFixed(1);
-          totalLoss += loss;
-          qual      = Math.max(10, Math.round(100 - latency * 0.3 - jitter * 0.4 - loss * 8));
-          qualCls   = qual > 60 ? 'bar-yellow' : 'bar-red';
-          qualTxt   = qual > 60 ? '⚠ Qualidade degradada' : '✘ Chamada instável / travando';
-
-          if (i === 15) addLog('b', 'AVISO: latência subindo — ' + latency + ' ms.', 'warn');
-          if (i === 30) addLog('b', 'Perda de pacotes detectada: ' + loss + '%.', 'err');
-          if (i === 50) addLog('b', 'Jitter: ' + jitter + ' ms — vídeo travando.', 'err');
-        } else {
-          // solo — smooth
-          latency = Math.round(18 + Math.random() * 12);
-          jitter  = Math.round(3  + Math.random() * 6);
-          loss    = +(Math.random() * 0.1).toFixed(1);
-          qual    = Math.round(92 + Math.random() * 8);
-          qualCls = 'bar-green';
-          qualTxt = '✔ Excelente qualidade';
-          bwB_pct = NEED;
-          updateBWBar();
+          const latAccum = (i * PKT_LAT_MS / 1000).toFixed(1);
+          setText('b-lat-total', latAccum + 's acumulados (' + i.toLocaleString('pt-BR') + ' RTTs)');
+          $('b-lat-total').className = 'val ' + (i < 3000 ? 'yellow' : 'red');
         }
 
-        setBar('b-qual', qual, qualCls);
-        setText('b-qual-st',  qualTxt);
-        setText('b-lat',      latency + ' ms');
-        setText('b-jitter',   jitter  + ' ms');
-        setText('b-loss',     loss    + '%');
-        setBar('b-bw', Math.round(bwB_pct), 'bar-yellow');
-
-        if (i === 80) {
-          const elapsed = ((Date.now() - start) / 1000).toFixed(1);
-          bwB_pct = 0;
-          updateBWBar();
-          if (contested) {
-            $('b-final').innerHTML =
-              '<span class="red">⚠ CHAMADA DEGRADADA (' + elapsed + 's)</span><br>' +
-              '<small style="color:#8b949e">Alta latência e perda de pacotes por saturação do link</small>';
-            addLog('b', 'Chamada encerrada com qualidade ruim — link disputado.', 'err');
-          } else {
-            $('b-final').innerHTML =
-              '<span class="green">✔ CHAMADA CONCLUÍDA (' + elapsed + 's)</span><br>' +
-              '<small style="color:#8b949e">Link exclusivo — sem degradação</small>';
-            addLog('b', 'Chamada encerrada com qualidade excelente.', 'ok');
-          }
-          return { elapsed, contested, qual };
+        if (logMilestones.has(i)) {
+          const sec2 = elapsed(bStart);
+          addLog('b',
+            i.toLocaleString('pt-BR') + ' pacotes enviados — ' +
+            (i / 100).toFixed(0) + '% (' + sec2 + 's decorridos)',
+            i < 5000 ? 'warn' : 'err'
+          );
         }
       }
+
+      const totalSec   = parseFloat(elapsed(bStart));
+      const throughput = ((TOTAL_KB / 1024) / totalSec * 8).toFixed(2);
+      const latTotal   = (PKT_COUNT * PKT_LAT_MS / 1000).toFixed(1);
+      const effPct     = ((A_DURATION_MS / 1000) / totalSec * 100).toFixed(0);
+
+      setText('b-prog-st',    '✔ Todos os pacotes entregues');
+      setText('b-throughput', throughput + ' Mbps');
+      setText('b-lat-total',  latTotal + 's (' + PKT_COUNT.toLocaleString('pt-BR') + ' RTTs × ' + PKT_LAT_MS + 'ms)');
+      $('b-lat-total').className = 'val red';
+      setText('b-eff',        '~' + effPct + '% (restante perdido com latência)');
+      $('b-eff').className    = 'val red';
+      $('b-final').innerHTML  =
+        '<span class="red">⚠ CONCLUÍDO em ' + totalSec.toFixed(1) + 's</span><br>' +
+        '<small style="color:#8b949e">Alta latência acumulada degradou o throughput</small>';
+      addLog('b', 'Concluído em ' + totalSec.toFixed(1) + 's — throughput efetivo: ' + throughput + ' Mbps.', 'err');
+      return totalSec;
     }
 
-
-    /* ── Scenario dispatcher ──────────────────── */
-    async function runScenario(mode) {
+    /* ── Entry point ──────────────────────────── */
+    async function iniciar() {
       if (running) return;
       running = true;
+      $('btnStart').disabled = true;
+      $('btnReset').disabled = true;
       resetAll();
-      await sleep(100);
-      ['btnA','btnB','btnAB'].forEach(id => $(id).disabled = true);
+      await sleep(150);
+      $('btnStart').disabled = true;
 
-      let sAval = '—', sBval = '—', sAB = '—', sSat = '—';
+      const [tA, tB] = await Promise.all([rotinaA(), rotinaB()]);
 
-      if (mode === 'A') {
-        addLog('a', 'Cenário: Rotina A isolada.', 'info');
-        await rotinaA(false);
-        sAval = 'Sim — sem competição';
-        $('s-a-solo').className = 'val green';
-        sSat = 'Não';
-        $('s-sat').className = 'val green';
+      // Summary
+      const diff = (tB - tA).toFixed(1);
+      setText('s-a-time', tA.toFixed(1) + 's');
+      setText('s-b-time', tB.toFixed(1) + 's');
+      setText('s-diff',   diff + 's mais lenta (' +
+        (tB / tA).toFixed(1) + '× mais devagar que A)');
 
-      } else if (mode === 'B') {
-        addLog('b', 'Cenário: Rotina B isolada.', 'info');
-        const res = await rotinaB(false);
-        sBval = 'Excelente — latência < 30 ms';
-        $('s-b-solo').className = 'val green';
-        sSat = 'Não';
-        $('s-sat').className = 'val green';
-
-      } else if (mode === 'AB') {
-        addLog('a', 'Cenário: Rotina A + B simultâneas!', 'warn');
-        addLog('b', 'Cenário: Rotina A + B simultâneas!', 'warn');
-        const [resA, resB] = await Promise.all([rotinaA(true), rotinaB(true)]);
-        sAval = 'Sim (porém monopolizou o link)';
-        $('s-a-solo').className = 'val yellow';
-        sAB = 'Degradada — alta latência, jitter e perda';
-        $('s-ab').className = 'val red';
-        sSat = 'Sim — ~100 Mbps utilizados';
-        $('s-sat').className = 'val red';
-      }
-
-      setText('s-a-solo', sAval);
-      setText('s-b-solo', sBval === '—' ? 'Execute "Apenas Rotina B" para ver' : sBval);
-      setText('s-ab',     sAB);
-      setText('s-sat',    sSat);
       $('summary').style.display = 'block';
-
-      $('btnReset').disabled = false;
+      $('insight').style.display = 'block';
+      $('btnReset').disabled     = false;
       running = false;
     }
   </script>
