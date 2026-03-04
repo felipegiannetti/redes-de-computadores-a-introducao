@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Terminal — Banda Larga 600 Mega | Questão 3</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d1117;
+      font-family: 'Courier New', monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 28px 16px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      color: #58a6ff;
+      font-size: 1.2em;
+      text-align: center;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      color: #8b949e;
+      font-size: 0.78em;
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    /* ── Info cards ───────────────────────────── */
+    .info-row {
+      display: flex;
+      gap: 14px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .info-card {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 6px;
+      padding: 10px 18px;
+      font-size: 0.76em;
+      color: #8b949e;
+      text-align: center;
+    }
+
+    .info-card span {
+      display: block;
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-top: 3px;
+    }
+
+    .info-card .dl { color: #3fb950; }
+    .info-card .ul { color: #f85149; }
+    .info-card .pl { color: #58a6ff; }
+
+    /* ── Buttons ──────────────────────────────── */
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    button {
+      border: none;
+      padding: 11px 28px;
+      border-radius: 6px;
+      font-size: 0.88em;
+      font-family: 'Courier New', monospace;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: filter 0.15s;
+    }
+    button:hover:not(:disabled) { filter: brightness(1.2); }
+    button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    #btnDown  { background: #1a3a1a; color: #3fb950; border: 1px solid #3fb950; }
+    #btnUp    { background: #3d1f00; color: #f78166; border: 1px solid #f78166; }
+    #btnClear { background: #21262d; color: #8b949e; border: 1px solid #30363d; }
+
+    /* ── Terminal ─────────────────────────────── */
+    .terminal-wrap {
+      width: 100%;
+      max-width: 780px;
+    }
+
+    .term-header {
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-bottom: none;
+      border-radius: 8px 8px 0 0;
+      padding: 8px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dot-row { display: flex; gap: 6px; }
+    .dot-r { width: 12px; height: 12px; border-radius: 50%; background: #f85149; }
+    .dot-y { width: 12px; height: 12px; border-radius: 50%; background: #e3b341; }
+    .dot-g { width: 12px; height: 12px; border-radius: 50%; background: #3fb950; }
+
+    .term-title {
+      color: #8b949e;
+      font-size: 0.75em;
+      margin-left: 6px;
+    }
+
+    #terminal {
+      background: #010409;
+      border: 1px solid #30363d;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      padding: 14px 16px;
+      height: 440px;
+      overflow-y: auto;
+      font-size: 0.8em;
+      line-height: 1.6;
+      color: #c9d1d9;
+    }
+
+    #terminal::-webkit-scrollbar { width: 5px; }
+    #terminal::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
+
+    .line { display: block; white-space: pre-wrap; word-break: break-all; }
+    .prompt  { color: #58a6ff; }
+    .ok      { color: #3fb950; }
+    .err     { color: #f85149; }
+    .warn    { color: #d29922; }
+    .dim     { color: #484f58; }
+    .bold    { color: #e6edf3; font-weight: bold; }
+    .speed-dl{ color: #3fb950; font-weight: bold; }
+    .speed-ul{ color: #f85149; font-weight: bold; }
+
+    /* ── Progress bar inside terminal ─────────── */
+    .bar-wrap {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 3px 0;
+    }
+
+    .bar-track {
+      background: #21262d;
+      border-radius: 2px;
+      height: 10px;
+      width: 300px;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid #30363d;
+    }
+
+    .bar-fill-dl {
+      background: #3fb950;
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.1s linear;
+    }
+
+    .bar-fill-ul {
+      background: #f85149;
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.4s linear;
+    }
+
+    .bar-pct {
+      font-size: 0.85em;
+      color: #8b949e;
+      min-width: 36px;
+    }
+
+    /* ── Status strip ─────────────────────────── */
+    .status-strip {
+      display: flex;
+      justify-content: space-between;
+      max-width: 780px;
+      width: 100%;
+      margin-top: 12px;
+      font-size: 0.75em;
+      color: #8b949e;
+      padding: 0 4px;
+    }
+
+    #status-left  { }
+    #status-right { }
+  </style>
+</head>
+<body>
+
+  <h1>&#x1F5A5;&#xFE0F; Terminal de Rede — Cliente "Banda Larga 600 Mega"</h1>
+  <p class="subtitle">Sistema de backup em nuvem · Download vs. Upload assimétrico</p>
+
+  <!-- ── Info cards ── -->
+  <div class="info-row">
+    <div class="info-card">
+      Velocidade anunciada
+      <span class="pl">600 Mbps</span>
+    </div>
+    <div class="info-card">
+      Download (real)
+      <span class="dl">&#x2193; 560 Mbps</span>
+    </div>
+    <div class="info-card">
+      Upload (real)
+      <span class="ul">&#x2191; 30 Mbps</span>
+    </div>
+    <div class="info-card">
+      Backup a enviar
+      <span class="pl">50 GB</span>
+    </div>
+  </div>
+
+  <!-- ── Buttons ── -->
+  <div class="btn-row">
+    <button id="btnDown"  onclick="runDownload()">&#x2B07; Baixar Atualização (Download)</button>
+    <button id="btnUp"    onclick="runUpload()">&#x2B06; Enviar Backup (Upload)</button>
+    <button id="btnClear" onclick="clearTerm()">&#x1F5D1; Limpar Terminal</button>
+  </div>
+
+  <!-- ── Terminal ── -->
+  <div class="terminal-wrap">
+    <div class="term-header">
+      <div class="dot-row">
+        <div class="dot-r"></div>
+        <div class="dot-y"></div>
+        <div class="dot-g"></div>
+      </div>
+      <span class="term-title">bash — net-transfer@cliente:~</span>
+    </div>
+    <div id="terminal"></div>
+  </div>
+
+  <div class="status-strip">
+    <span id="status-left">Pronto.</span>
+    <span id="status-right"></span>
+  </div>
+
+  <script>
+    'use strict';
+
+    const term   = document.getElementById('terminal');
+    let running  = false;
+
+    /* ── Helpers ──────────────────────────────── */
+    const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+    function setStatus(l, r) {
+      if (l !== null) document.getElementById('status-left').textContent  = l;
+      if (r !== null) document.getElementById('status-right').textContent = r;
+    }
+
+    // Scroll to bottom — plain JS, no dependencies
+    function scrollBottom() {
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function writeLine(text, cls) {
+      const s       = document.createElement('span');
+      s.className   = 'line ' + (cls || '');
+      s.textContent = text;
+      term.appendChild(s);
+      scrollBottom();
+    }
+
+    function writeBlank() { writeLine(''); }
+
+    function writePrompt(cmd) {
+      writeLine('user@empresa:~$ ' + cmd, 'prompt');
+    }
+
+    // Creates an inline progress-bar widget; returns { update(pct), remove() }
+    function createProgressBar(type) {
+      const wrap = document.createElement('div');
+      wrap.className = 'bar-wrap';
+
+      const track = document.createElement('div');
+      track.className = 'bar-track';
+
+      const fill = document.createElement('div');
+      fill.className = type === 'dl' ? 'bar-fill-dl' : 'bar-fill-ul';
+      fill.style.width = '0%';
+      track.appendChild(fill);
+
+      const pctSpan = document.createElement('span');
+      pctSpan.className = 'bar-pct';
+      pctSpan.textContent = '0%';
+
+      wrap.appendChild(track);
+      wrap.appendChild(pctSpan);
+      term.appendChild(wrap);
+      scrollBottom();
+
+      return {
+        update(pct) {
+          fill.style.width        = pct + '%';
+          pctSpan.textContent     = pct + '%';
+          scrollBottom();
+        },
+        remove() { /* keep it visible */ }
+      };
+    }
+
+    function clearTerm() {
+      if (running) return;
+      term.innerHTML = '';
+      setStatus('Terminal limpo.', '');
+    }
+
+    // Disable / enable buttons
+    function setButtons(disabled) {
+      ['btnDown', 'btnUp'].forEach(id => {
+        document.getElementById(id).disabled = disabled;
+      });
+    }
+
+    /* ── DOWNLOAD ─────────────────────────────── */
+    async function runDownload() {
+      if (running) return;
+      running = true;
+      setButtons(true);
+
+      const FILE_MB    = 1200;   // simulated file size
+      const SPEED_MBPS = 560;    // download speed (Mbps)
+      // Sim: compress into ~4s for demo
+      const STEPS = 80;
+      const STEP_MS = 50;
+
+      writeBlank();
+      writePrompt('net-download --source cdn.acme.com --file update-v3.2.0.tar.gz');
+      await sleep(300);
+      writeLine('Conectando ao servidor CDN...                     ', 'dim');
+      await sleep(400);
+      writeLine('Conexão estabelecida — TLS 1.3', 'ok');
+      writeLine('Velocidade do link detectada: ' + SPEED_MBPS + ' Mbps (download)    ', 'ok');
+      writeLine('Tamanho do arquivo: ' + FILE_MB + ' MB', 'dim');
+      writeBlank();
+      writeLine('Iniciando download...', 'bold');
+
+      const bar   = createProgressBar('dl');
+      const start = Date.now();
+
+      for (let i = 1; i <= STEPS; i++) {
+        await sleep(STEP_MS);
+        const pct    = Math.round((i / STEPS) * 100);
+        const mbDone = Math.round((pct / 100) * FILE_MB);
+        const sec    = ((Date.now() - start) / 1000).toFixed(1);
+        bar.update(pct);
+        setStatus(
+          'Download: ' + pct + '% (' + mbDone + '/' + FILE_MB + ' MB)',
+          sec + 's decorridos'
+        );
+
+        // milestone log lines
+        if (i === 20) writeLine('  ↓  300 MB recebidos   [' + SPEED_MBPS + ' Mbps] ██████░░░░░░░░░░', 'speed-dl');
+        if (i === 40) writeLine('  ↓  600 MB recebidos   [' + SPEED_MBPS + ' Mbps] ████████████░░░░', 'speed-dl');
+        if (i === 60) writeLine('  ↓  900 MB recebidos   [' + SPEED_MBPS + ' Mbps] ██████████████░░', 'speed-dl');
+        if (i === 80) writeLine('  ↓ 1200 MB recebidos   [' + SPEED_MBPS + ' Mbps] ████████████████', 'speed-dl');
+      }
+
+      const totalSec = ((Date.now() - start) / 1000).toFixed(2);
+      writeBlank();
+      writeLine('✔  Download concluído em ' + totalSec + 's', 'ok');
+      writeLine('   Velocidade média: ~' + SPEED_MBPS + ' Mbps (Download)', 'ok');
+      writeLine('   Arquivo salvo em /tmp/update-v3.2.0.tar.gz', 'dim');
+      writeBlank();
+      setStatus('Download concluído (' + totalSec + 's).', '');
+
+      running = false;
+      setButtons(false);
+    }
+
+    /* ── UPLOAD ───────────────────────────────── */
+    async function runUpload() {
+      if (running) return;
+      running = true;
+      setButtons(true);
+
+      const FILE_GB    = 50;
+      const FILE_MB    = FILE_GB * 1024;            // 51200 MB
+      const SPEED_MBPS = 30;                        // upload speed (Mbps)
+      // Real time = 51200 * 8 / 30 = ~13.650 seconds (~3h 47min)
+      // Simulated: compress to ~18s
+      const STEPS   = 90;
+      const STEP_MS = 200;
+
+      writeBlank();
+      writePrompt('net-upload --dest backup.nuvem.com --path /dados/empresa/ --size 50GB');
+      await sleep(300);
+      writeLine('Conectando ao servidor de backup...', 'dim');
+      await sleep(500);
+      writeLine('Conexão estabelecida — TLS 1.3', 'ok');
+      writeLine('Velocidade do link detectada: ' + SPEED_MBPS + ' Mbps (upload)', 'warn');
+      writeLine('Tamanho do backup: ' + FILE_GB + ' GB (' + FILE_MB + ' MB)', 'dim');
+      writeBlank();
+      writeLine('⚠  AVISO: velocidade de upload 18× menor que a de download!', 'warn');
+      writeLine('   Tempo estimado real: ~3 horas e 47 minutos', 'warn');
+      writeLine('   (simulação acelerada para demonstração)', 'dim');
+      writeBlank();
+      writeLine('Iniciando upload...', 'bold');
+
+      const bar   = createProgressBar('ul');
+      const start = Date.now();
+      let warned  = false;
+
+      for (let i = 1; i <= STEPS; i++) {
+        await sleep(STEP_MS);
+        const pct    = Math.round((i / STEPS) * 100);
+        const gbDone = ((pct / 100) * FILE_GB).toFixed(1);
+        const sec    = ((Date.now() - start) / 1000).toFixed(1);
+
+        // Simulate speed drop at 40% (upload saturating, network degrades)
+        const currentSpeed = i > 36
+          ? Math.max(8, SPEED_MBPS - Math.round(Math.random() * 14))
+          : SPEED_MBPS;
+
+        bar.update(pct);
+        setStatus(
+          'Upload: ' + pct + '% (' + gbDone + '/' + FILE_GB + ' GB)',
+          sec + 's decorridos — ' + currentSpeed + ' Mbps'
+        );
+
+        if (i === 18) writeLine('  ↑  5 GB enviados     [' + SPEED_MBPS + ' Mbps]   ██░░░░░░░░░░░░░░', 'speed-ul');
+        if (i === 36) {
+          writeLine('  ↑ 20 GB enviados     [' + SPEED_MBPS + ' Mbps]   ████████░░░░░░░░', 'speed-ul');
+          writeLine('', '');
+          writeLine('⚠  REDE DA EMPRESA TRAVADA — todos os usuários afetados!', 'err');
+          writeLine('   Upload monopolizou o canal de subida (upload).', 'err');
+          writeLine('   Navegação, VoIP e e-mails parados.', 'err');
+          writeLine('', '');
+          warned = true;
+        }
+        if (i === 54) writeLine('  ↑ 30 GB enviados     [' + (currentSpeed) + ' Mbps]   ████████████░░░░', 'speed-ul');
+        if (i === 72) writeLine('  ↑ 40 GB enviados     [' + (currentSpeed) + ' Mbps]   ██████████████░░', 'speed-ul');
+        if (i === 90) writeLine('  ↑ 50 GB enviados     [' + (currentSpeed) + ' Mbps]   ████████████████', 'speed-ul');
+      }
+
+      const totalSec = ((Date.now() - start) / 1000).toFixed(2);
+      writeBlank();
+      writeLine('✔  Upload concluído em ' + totalSec + 's (simulação)', 'ok');
+      writeLine('   Na prática (50 GB a 30 Mbps): ~3h 47min', 'warn');
+      writeLine('   Velocidade média: ~' + SPEED_MBPS + ' Mbps (Upload) vs 560 Mbps (Download)', 'warn');
+      writeLine('   Link ASSIMÉTRICO confirmado: Download >> Upload', 'err');
+      writeBlank();
+      setStatus('Upload concluído (' + totalSec + 's simulados / ~3h47min real).', '');
+
+      running = false;
+      setButtons(false);
+    }
+  </script>
+</body>
+</html>
