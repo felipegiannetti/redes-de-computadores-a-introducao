@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Questao 6 &#x2014; Missao TRE-MG: UDP vs TCP</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: #0d1117;
+      color: #c9d1d9;
+      font-family: 'Courier New', monospace;
+      padding: 24px 16px;
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      color: #58a6ff;
+      font-size: 1.2em;
+      margin-bottom: 4px;
+      letter-spacing: 1px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #8b949e;
+      font-size: 0.78em;
+      margin-bottom: 20px;
+    }
+
+    /* ── Spec box ─────────────────────────────── */
+    .spec-box {
+      max-width: 800px;
+      margin: 0 auto 22px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-left: 3px solid #e3b341;
+      border-radius: 6px;
+      padding: 10px 16px;
+      font-size: 0.72em;
+      color: #8b949e;
+      line-height: 1.75;
+    }
+    .spec-box strong { color: #e3b341; }
+
+    /* ── Panels ───────────────────────────────── */
+    .panels {
+      display: flex;
+      gap: 14px;
+      max-width: 960px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+    }
+
+    .panel {
+      flex: 1;
+      min-width: 310px;
+      background: #161b22;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .panel-udp { border-top: 3px solid #f85149; }
+    .panel-tcp { border-top: 3px solid #3fb950; }
+
+    .ph {
+      padding: 10px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #21262d;
+    }
+    .panel-udp .ph { background: #130808; }
+    .panel-tcp .ph { background: #081308; }
+
+    .ph-title { font-size: 0.88em; font-weight: bold; }
+    .panel-udp .ph-title { color: #f85149; }
+    .panel-tcp .ph-title { color: #3fb950; }
+
+    .btn-run {
+      padding: 6px 14px;
+      border-radius: 5px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.76em;
+      cursor: pointer;
+      border: 1px solid;
+      transition: all 0.15s;
+    }
+    .btn-udp { background: #200c0c; color: #f85149; border-color: #f85149; }
+    .btn-udp:hover:not(:disabled) { background: #2d1010; }
+    .btn-tcp { background: #0c200c; color: #3fb950; border-color: #3fb950; }
+    .btn-tcp:hover:not(:disabled) { background: #102a10; }
+    .btn-run:disabled { opacity: 0.4; cursor: not-allowed; }
+
+    /* ── Terminal ─────────────────────────────── */
+    .terminal {
+      height: 380px;
+      overflow-y: auto;
+      padding: 10px 12px;
+      font-size: 0.73em;
+      line-height: 1.8;
+      background: #010409;
+    }
+
+    .ll  { display: block; }
+    .ts  { color: #484f58; }
+    .cr  { color: #f85149; }
+    .cg  { color: #3fb950; }
+    .cb  { color: #58a6ff; }
+    .cy  { color: #e3b341; }
+    .cw  { color: #8b949e; }
+    .cp  { color: #bc8cff; }
+
+    /* ── Stats bar ────────────────────────────── */
+    .stats {
+      padding: 8px 14px;
+      background: #161b22;
+      border-top: 1px solid #21262d;
+      font-size: 0.70em;
+      display: flex;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .st { color: #8b949e; }
+    .panel-udp .st span { color: #f85149; font-weight: bold; }
+    .panel-tcp .st span { color: #3fb950; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+<h1>&#x1F3DB; Missao TRE-MG &#x2014; Confiabilidade na Transmissao de Votos</h1>
+<p class="subtitle">Linha dedicada 50 Mbps &bull; Full-Duplex &bull; Sincrono &bull; Orientado a Conexao</p>
+
+<div class="spec-box">
+  <strong>ESPECIFICACOES TECNICAS DO CONTRATO:</strong>
+  Linha dedicada ponto-a-ponto &bull;
+  Velocidade: <strong>50 Mbps</strong> &bull;
+  Transmissao: <strong>sincrona, full-duplex</strong> &bull;
+  <strong>Orientado a conexao</strong> &bull;
+  Periodo: 7 dias &bull;
+  Trecho: Av. Prudente de Moraes (TRE-MG) &rarr; Rua Guajajaras, 18&ordm; andar (EJEF/TJMG)
+</div>
+
+<div class="panels">
+
+  <!-- UDP -->
+  <div class="panel panel-udp">
+    <div class="ph">
+      <div class="ph-title">&#x26A1; UDP &#x2014; Sem Conexao (Nao-Orientado)</div>
+      <button class="btn-run btn-udp" id="bu" onclick="runUDP()">&#x25B6; Iniciar UDP</button>
+    </div>
+    <div class="terminal" id="tu"></div>
+    <div class="stats">
+      <div class="st">Enviadas: <span id="us">0</span></div>
+      <div class="st">Recebidas: <span id="ur">0</span></div>
+      <div class="st">Perdidas: <span id="ul">0</span></div>
+      <div class="st">Perda: <span id="up">&#x2014;</span></div>
+    </div>
+  </div>
+
+  <!-- TCP -->
+  <div class="panel panel-tcp">
+    <div class="ph">
+      <div class="ph-title">&#x1F512; TCP &#x2014; Orientado a Conexao</div>
+      <button class="btn-run btn-tcp" id="bt" onclick="runTCP()">&#x25B6; Iniciar TCP</button>
+    </div>
+    <div class="terminal" id="tt"></div>
+    <div class="stats">
+      <div class="st">Enviadas: <span id="ts">0</span></div>
+      <div class="st">Entregues: <span id="tr">0</span></div>
+      <div class="st">Retransmitidas: <span id="tx">0</span></div>
+      <div class="st">Entrega: <span id="tp">&#x2014;</span></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+'use strict';
+
+var URNAS = 8;
+
+function sleep(ms) {
+  return new Promise(function(resolve) { setTimeout(resolve, ms); });
+}
+
+function now() {
+  var d = new Date();
+  function p(n) { return String(n).padStart(2, '0'); }
+  return p(d.getHours()) + ':' + p(d.getMinutes()) + ':' + p(d.getSeconds()) + '.' +
+         String(d.getMilliseconds()).padStart(3, '0');
+}
+
+function addLine(termId, html) {
+  var term = document.getElementById(termId);
+  term.insertAdjacentHTML('beforeend', '<span class="ll">' + html + '</span>');
+  term.scrollTop = term.scrollHeight;
+}
+
+function clearTerm(id) {
+  document.getElementById(id).innerHTML = '';
+}
+
+/* ─── UDP ─────────────────────────────────────── */
+async function runUDP() {
+  var btn = document.getElementById('bu');
+  btn.disabled = true;
+  clearTerm('tu');
+
+  var sent = 0, recv = 0, lost = 0;
+  var lostList = [];
+
+  function upd() {
+    document.getElementById('us').textContent = sent;
+    document.getElementById('ur').textContent = recv;
+    document.getElementById('ul').textContent = lost;
+    document.getElementById('up').textContent = sent > 0
+      ? (lost / sent * 100).toFixed(0) + '%' : '\u2014';
+  }
+
+  addLine('tu', '<span class="ts">[' + now() + ']</span> <span class="cy">Protocolo UDP \u2014 sem handshake, sem garantia de entrega</span>');
+  await sleep(300);
+  addLine('tu', '<span class="ts">[' + now() + ']</span> <span class="cw">Disparando pacotes diretamente (fire-and-forget)...</span>');
+  await sleep(250);
+
+  for (var i = 1; i <= URNAS; i++) {
+    await sleep(110 + Math.random() * 90);
+    sent++;
+    var drop = Math.random() < 0.35;
+    if (drop) {
+      lost++;
+      lostList.push(i);
+      addLine('tu', '<span class="ts">[' + now() + ']</span> <span class="cr">\u2718 PACOTE PERDIDO \u2014 Urna ' + i + ' nao chegou a sede (sem retransmissao)</span>');
+    } else {
+      recv++;
+      addLine('tu', '<span class="ts">[' + now() + ']</span> <span class="cg">\u2714 Urna ' + i + ' recebida</span> <span class="cw">[sem confirmacao de entrega]</span>');
+    }
+    upd();
+  }
+
+  await sleep(200);
+  if (lost > 0) {
+    addLine('tu', '<span class="ts">[' + now() + ']</span> <span class="cr">\u2501\u2501 TRANSMISSAO CONCLUIDA COM FALHAS \u2501\u2501</span>');
+    addLine('tu', '<span class="ts">[' + now() + ']</span> <span class="cr">\u26A0 ' + lost + ' de ' + URNAS + ' urna(s) PERDIDA(S): [Urna(s) ' + lostList.join(', ') + ']</span>');
+    addLine('tu', '<span class="ts">[' + now() + ']</span> <span class="cy">UDP nao retransmite. Resultado eleitoral INCOMPLETO.</span>');
+  } else {
+    addLine('tu', '<span class="ts">[' + now() + ']</span> <span class="cg">\u2501\u2501 Transmissao OK (nenhuma perda desta vez) \u2501\u2501</span>');
+    addLine('tu', '<span class="ts">[' + now() + ']</span> <span class="cy">Porem: UDP nao GARANTE isso \u2014 proxima execucao pode perder pacotes.</span>');
+  }
+
+  btn.disabled = false;
+}
+
+/* ─── TCP ─────────────────────────────────────── */
+async function runTCP() {
+  var btn = document.getElementById('bt');
+  btn.disabled = true;
+  clearTerm('tt');
+
+  var sent = 0, recv = 0, retr = 0;
+
+  function upd() {
+    document.getElementById('ts').textContent = sent;
+    document.getElementById('tr').textContent = recv;
+    document.getElementById('tx').textContent = retr;
+    document.getElementById('tp').textContent = recv > 0
+      ? (recv / URNAS * 100).toFixed(0) + '%' : '\u2014';
+  }
+
+  /* 3-way handshake */
+  addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cb">Iniciando TCP 3-way Handshake...</span>');
+  await sleep(350);
+  addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cb">\u2192 SYN enviado      [seq=0]</span>');
+  await sleep(230);
+  addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cb">\u2190 SYN-ACK recebido  [seq=0, ack=1]</span>');
+  await sleep(180);
+  addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cb">\u2192 ACK enviado       [ack=1] \u2014 handshake concluido</span>');
+  await sleep(280);
+  addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cg">\u2714 CONECTADO \u2014 canal confiavel estabelecido com a sede do TRE-MG</span>');
+  await sleep(280);
+  addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cw">Iniciando envio das urnas (ordenado e confirmado)...</span>');
+  await sleep(200);
+
+  for (var i = 1; i <= URNAS; i++) {
+    await sleep(290 + Math.random() * 110);
+    sent++;
+    var needRetry = Math.random() < 0.28;
+    if (needRetry) {
+      retr++;
+      addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cy">\u27F3 Urna ' + i + ' \u2014 timeout detectado, retransmitindo...</span>');
+      await sleep(320);
+      addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cy">\u2192 Urna ' + i + ' reenviada [seq=' + (i * 100) + ']</span>');
+      await sleep(200);
+    } else {
+      addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cw">\u2192 Urna ' + i + ' enviada [seq=' + (i * 100) + ']</span>');
+      await sleep(140);
+    }
+    recv++;
+    addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cg">\u2714 ACK recebido \u2014 Urna ' + i + ' confirmada e entregue em ordem</span>');
+    upd();
+  }
+
+  /* 4-way teardown */
+  await sleep(260);
+  addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cb">\u2192 FIN enviado \u2014 solicitando encerramento</span>');
+  await sleep(180);
+  addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cb">\u2190 FIN-ACK recebido \u2014 conexao encerrada</span>');
+  await sleep(200);
+  addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cg">\u2501\u2501 TRANSMISSAO CONCLUIDA \u2014 ' + URNAS + '/' + URNAS + ' urnas entregues (100%) \u2501\u2501</span>');
+  if (retr > 0) {
+    addLine('tt', '<span class="ts">[' + now() + ']</span> <span class="cy">' + retr + ' retransmissao(oes) necessaria(s) \u2014 integridade garantida pelo TCP</span>');
+  }
+
+  btn.disabled = false;
+}
+</script>
+</body>
+</html>
