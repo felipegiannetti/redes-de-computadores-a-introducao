@@ -1,4 +1,4 @@
-# Redes de Computadores — Lista A: Introdução
+# Redes de Computadores
 
 **PUC Minas — Engenharia de Software**
 
