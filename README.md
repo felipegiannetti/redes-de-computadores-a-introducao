@@ -1,4 +1,4 @@
-# Redes de Computadores
+# Redes de Computadores- Felipe Giannetti & Arthur Faria
 
 **PUC Minas — Engenharia de Software**
 
